@@ -3,14 +3,12 @@ library(dplyr)
 library(tidyselect)
 library(tidyverse)
 
-
-
 analyseWCST_surveys <- function(filepath){
 
 rawData <- read_csv(filepath)
 
 ## Consent & exclusion criteria
-participant <- unique(na.omit(rawData$PROLIFIC_PID))
+participant <- unique(na.omit(rawData$participant)) # update this if the new participant info link works & we want to include Qualtrics participants
 group <- unique(na.omit(rawData$group))
 consent<- unique(na.omit(rawData$`Participant_Info_Consent.block_1/Consent`))
 illness <- unique(na.omit(rawData$`Exclusion_Criteria_1.block_1/Mental_health_conditions`))
@@ -45,8 +43,8 @@ for ( col in 1:ncol(ETMS_scale)){
   colnames(ETMS_scale)[col] <-  sub("ETMS_survey_end.block_1/Epistemic Trust Mistrust.", "", colnames(ETMS_scale)[col])
 } # rename columns to be more concise 
 
-ETMS_scale <- ETMS_scale %>% rename_at('Row 17', ~'ETMS_17')
-ETMS_scale <- ETMS_scale %>% rename_at('Row 18', ~'ETMS_18') # Fix coding error in original survey
+# ETMS_scale <- ETMS_scale %>% rename_at('Row 17', ~'ETMS_17')
+# ETMS_scale <- ETMS_scale %>% rename_at('Row 18', ~'ETMS_18') # Fix coding error in original survey - only for first 26 participants
 
 ## Manipulation check 
 
@@ -90,7 +88,7 @@ return (allData_participant)
 
 
 ##  Here is the code to do the analysis for all the files 
-folder <- "data/"
+folder <- "data_new/"
 
 list = list.files(path = folder ,full.names=TRUE,recursive=TRUE) # list all files in the folder
 all_names = basename(list) # Get names of all files from their corresponding paths
@@ -102,10 +100,15 @@ nSubs <- length(all_names)
 for (i in 1:nSubs){
   filepath <- paste0(folder, all_names[i])
   allData_participant <- analyseWCST_surveys(filepath)
-  df <- rbind(df, allData_participant) # Append it to the existing data frame
+
+  if (length(allData_participant)==50) # Check that all the columns are there
+{df <- rbind(df, allData_participant)} # Append data to the existing data frame
+  else 
+  {indRes <- paste0(folder, 'individual_results/', allData_participant$participant, '_analysed.csv')
+    write.csv(allData_participant, indRes)} # Save individual files to be manually added
+
 }
 
-## To do: Put all the above in a loop to analyse all the data 
 
-fileName <- ("ALL_results.csv")
+fileName <- ("ALL_results_new.csv")
 write.csv(df, fileName)
