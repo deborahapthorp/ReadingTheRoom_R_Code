@@ -45,6 +45,9 @@ for ( col in 1:ncol(ETMS_scale)){
 
 # ETMS_scale <- ETMS_scale %>% rename_at('Row 17', ~'ETMS_17')
 # ETMS_scale <- ETMS_scale %>% rename_at('Row 18', ~'ETMS_18') # Fix coding error in original survey - only for first 26 participants
+=======
+# ETMS_scale <- ETMS_scale %>% rename_at('Row 18', ~'ETMS_18') # Fix coding error in original survey
+>>>>>>> 251e61f10522cc56d2365d7d0701499d361df88e
 
 ## Manipulation check 
 
