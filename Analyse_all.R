@@ -13,7 +13,7 @@ rawData <- read_csv(filepath)
 
 ## Consent & exclusion criteria
 participant <- unique(na.omit(rawData$participant)) # participant code (uncomment below for the first 26 participants )
-# participant <- unique(na.omit(rawData$PROLIFIC_PID)) # For the first 26 participants 
+#participant <- unique(na.omit(rawData$PROLIFIC_PID)) # For the first 26 participants 
 group <- unique(na.omit(rawData$group))
 consent<- unique(na.omit(rawData$`Participant_Info_Consent.block_1/Consent`))
 illness <- unique(na.omit(rawData$`Exclusion_Criteria_1.block_1/Mental_health_conditions`))
@@ -48,8 +48,8 @@ for ( col in 1:ncol(ETMS_scale)){
 
 
 # Fix coding error in original survey - only for first 26 participants
-# ETMS_scale <- ETMS_scale %>% rename_at('Row 17', ~'ETMS_17')
-# ETMS_scale <- ETMS_scale %>% rename_at('Row 18', ~'ETMS_18')
+#ETMS_scale <- ETMS_scale %>% rename_at('Row 17', ~'ETMS_17')
+#ETMS_scale <- ETMS_scale %>% rename_at('Row 18', ~'ETMS_18')
 
 ## Manipulation check 
 
@@ -99,7 +99,7 @@ folder <- "data_new/" # 1st 26 participants are in "data/"
 list = list.files(path = folder ,full.names=TRUE,recursive=TRUE) # list all files in the folder
 all_names = basename(list) # Get names of all files from their corresponding paths
 
-df <- data.frame(matrix(ncol = 51, nrow = 0)) # Make empty data frame
+#df <- data.frame(matrix(ncol = 51, nrow = 0)) # Make empty data frame
 
 nSubs <- length(all_names)
 
