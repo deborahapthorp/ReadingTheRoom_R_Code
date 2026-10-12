@@ -34,10 +34,19 @@ for ( col in 1:ncol(IU_scale)){
 } # rename columns to be more concise 
 
 ## WCST
-prop_correct_WCST <-  mean(na.omit(rawData$Score))  # The mean will work as it's all 1s and 0s! 
+prop_correct_WCST <-  mean(na.omit(rawData$Score))  # The mean will work as it's all 1s and 0s!
 mean_RT_WCST <- mean(na.omit(rawData$RT))
 median_RT_WCST <- median(na.omit(rawData$RT))
 
+
+# Can we code perseverative errors here? 
+
+correct <- na.omit(rawData$Score)
+trials <- na.omit(rawData$trials.thisN)
+correctData <- data.frame(cbind(correct, trials))
+filteredData <- filter(correctData, trials >1) # filter out trials 1 and 2 after rule switch (starts from 0)
+
+perseverative_errors <- 1- mean(filteredData$correct)
 ## ETMS scale
 
 ETMS_scale <- na.omit(rawData %>% select(contains("Epistemic")))
@@ -77,7 +86,7 @@ singleVars <- list(participant = participant,  consent = consent, illness = illn
                    group = group, age = age, sex = sex, education = education, 
                    ethnicity = ethnicity, politics = politics, 
                    prop_correct_WCST = prop_correct_WCST, mean_RT_WCST = mean_RT_WCST, 
-                   median_RT_WCST = median_RT_WCST,
+                   median_RT_WCST = median_RT_WCST, perseverative_errors = perseverative_errors,
                    study_purpose = study_purpose, evaluated = evaluated, 
                    interpretation = interpretation, suspicious = suspicious, 
                    disclosure = disclosure, data_use = data_use)
@@ -94,12 +103,12 @@ return (allData_participant) # return a data frame
 
 ##  Analyse all files in a folder using the function above 
 
-folder <- "data_new/" # 1st 26 participants are in "data/"
+folder <- "data/" # 1st 26 participants are in "data/"
 
 list = list.files(path = folder ,full.names=TRUE,recursive=TRUE) # list all files in the folder
 all_names = basename(list) # Get names of all files from their corresponding paths
 
-#df <- data.frame(matrix(ncol = 51, nrow = 0)) # Make empty data frame
+df <- data.frame(matrix(ncol = 52, nrow = 0)) # Make empty data frame
 
 nSubs <- length(all_names)
 
@@ -107,7 +116,7 @@ for (i in 1:nSubs){
   filepath <- paste0(folder, all_names[i])
   allData_participant <- analyseWCST_surveys(filepath)
 
-  if (length(allData_participant)==51) # Check that all the columns are there
+  if (length(allData_participant)==52) # Check that all the columns are there
 {df <- rbind(df, allData_participant)} # Append data to the existing data frame
   else  # otherwise write results individually (inelegant hack)
   {indRes <- paste0('individual_results/', allData_participant$participant, '_analysed.csv')
@@ -116,5 +125,5 @@ for (i in 1:nSubs){
 }
 
 # Write everything to file 
-fileName <- ("ALL_results_new.csv")
+fileName <- ("ALL_results_with_perseverative_errors_first26.csv")
 write.csv(df, fileName)
