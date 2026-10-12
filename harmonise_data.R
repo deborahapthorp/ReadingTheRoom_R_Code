@@ -1,7 +1,7 @@
 library(readr)
 
 prolific_Data <- read_csv('Prolific_demographics_all.csv')
-pavlovia_Data <- read_csv('ALL_results_combined.csv')
+pavlovia_Data <- read_csv('ALL_results_latest_with_perseverative_errors.csv')
 
 harmonised_Data <- merge(prolific_Data, pavlovia_Data, by.x = "Participant id", by.y = "participant", all = TRUE)
 
